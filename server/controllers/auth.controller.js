@@ -1,7 +1,7 @@
 const User = require("../models/user.model.js");
 const bcryptjs=require("bcryptjs");
 
-module.exports = signup = async (req, res) => {
+module.exports = signup = async (req, res,next) => {
   const { username, email, password } = req.body;
 
   const hashedPassword=bcryptjs.hashSync(password,10);
@@ -12,6 +12,6 @@ module.exports = signup = async (req, res) => {
       await user.save();
       res.status(200).send({ success: true, message: "User Saved successfully" });
     } catch (error) {
-        res.status(500).send({ success: false, message: error?.message });
+        next(error);
     }
 };
