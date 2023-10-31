@@ -12,31 +12,25 @@ export function GetData(apiRoute, payload, callback) {
       callback(response);
     })
     .catch((error) => {
-      callback(error);
+      callback(error?.response);
     });
 }
-
 export function PostData(apiRoute, payload, callback) {
-    try
-    {
-        axios
-        .post(baseUrl + apiRoute, payload, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": 'application/json'
-          },
-        })
-        .then((response) => {
-          callback(response);
-        })
-        .catch((error) => {
-          callback(error);
-        });
-    
-    }
-    catch(error)
-    {
-        callback(error);
-    }
-  
+  try {
+    axios   
+      .post(baseUrl + apiRoute, payload, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        callback(response);
+      })
+      .catch((error) => {
+        callback(error?.response);
+      });
+  } catch (error) {
+    callback(error);
+  }
 }

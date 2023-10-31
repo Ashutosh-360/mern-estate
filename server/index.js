@@ -14,11 +14,11 @@ app.listen(8000, () => {
 });
 app.use(express.json())
 
+app.use("/api/v1",userRouter);
+app.use("/api/v1",authRouter);
+
 app.use((error,req,res,next)=>{
   const statusCode=error.statusCode || 500;
   const message=error?.message || "internal server error";
   return res.status(statusCode).send({success:false,statusCode,message})
 })
-
-app.use("/api/v1",userRouter);
-app.use("/api/v1",authRouter);
