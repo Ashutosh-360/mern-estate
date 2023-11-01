@@ -4,6 +4,6 @@ const moduleObj = require("../controllers/auth.controller");
 
 const authRouter = express.Router();
 
-// authRouter.post("/signup", signup);
+authRouter.post("/signup", moduleObj?.signup);
 authRouter.post("/signin", moduleObj.signin);
 module.exports = authRouter;

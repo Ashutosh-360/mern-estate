@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { PostData } from "../UtilityFunction/API";
 
 function SignUp() {
   const [userDetails, setUserDetails] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const [error, setError] = useState("");
 
   const signUpHandler = () => {
     PostData("api/v1/signup", userDetails, updateSignUpHandler);
@@ -14,7 +16,11 @@ function SignUp() {
     setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
   };
   const updateSignUpHandler = (response) => {
-    console.log(response);
+    if (response?.data?.success) {
+      navigate("/signin");
+    } else {
+      setError(response?.data?.message);
+    }
   };
 
   return (
@@ -53,6 +59,7 @@ function SignUp() {
       >
         {isLoading ? "Loading..." : "Sign Up"}
       </button>
+      {error ? <div>{error}</div> : ""}
       <div className="flex gap-4">
         <div>Already a user?</div>
         <Link to={"/signin"}>
