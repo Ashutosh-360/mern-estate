@@ -34,7 +34,9 @@ async function signup  (req, res, next)  {
     }
     console.log("dddddddd");
     const token=jwt.sign({id:validUser._id},"sdf5s41w1vf41vb7b551s5e1f8ed2v1d5v1")
-    res.cookie("authentication_token",token,{httpOnly:true})?.status(200)?.json(validUser);
+    const {password:pass,...rest}=validUser._doc;
+
+    res.cookie("authentication_token",token,{httpOnly:true})?.status(200)?.json({success:true,...rest});
   } catch (error) {
     next(error);
   }

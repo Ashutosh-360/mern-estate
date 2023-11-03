@@ -17,6 +17,7 @@ function SignIn() {
     setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
   };
   const updateSignUpHandler = (response) => {
+    console.log(response);
     if (response?.data?.success) {
       setIsLoading(false);
       navigate("/");
@@ -65,7 +66,7 @@ function SignIn() {
       <div className="flex gap-4">
         <div>Already a user?</div>
         <Link to={"/signup"}>
-          <div>Sign Up</div>
+          <div>Sign In</div>
         </Link>
       </div>
     </div>
