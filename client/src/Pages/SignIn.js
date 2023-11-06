@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { signInStart } from "../redux/Slice/userSlice";
 import { PostData } from "../UtilityFunction/API";
 
 function SignIn() {
@@ -7,9 +9,10 @@ function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const signUpHandler = () => {
-    setIsLoading(true);
+    dispatch(signInStart());
     PostData("api/v1/signin", userDetails, updateSignUpHandler);
   };
 
@@ -17,7 +20,6 @@ function SignIn() {
     setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
   };
   const updateSignUpHandler = (response) => {
-    console.log(response);
     if (response?.data?.success) {
       setIsLoading(false);
       navigate("/");
