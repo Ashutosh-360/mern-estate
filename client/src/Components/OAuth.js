@@ -1,6 +1,7 @@
 import React from "react";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { app } from "../firebase";
+import { PostData } from "../UtilityFunction/API";
 
 function OAuth() {
   const handleContinueWithGoogle = async () => {
@@ -9,7 +10,12 @@ function OAuth() {
       const auth = getAuth(app);
 
       const result = await signInWithPopup(auth, provider);
-      console.log(result);
+
+      console.log(result)
+      let payload = {
+        name: result.user.displayName, email:result.user.email,photo:result.user.photoURL
+      }
+      PostData("api/v1/google",payload)
     } catch {}
   };
   return (
