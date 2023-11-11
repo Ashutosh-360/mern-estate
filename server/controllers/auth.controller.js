@@ -1,9 +1,10 @@
 const User = require("../models/user.model.js");
 const bcryptjs = require("bcryptjs");
 const errorHandler = require("../utility/errorHandler.js");
-const jwt=require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 
-async function signup  (req, res, next)  {
+
+async function signup(req, res, next) {
   const { username, email, password } = req.body;
   const hashedPassword = bcryptjs.hashSync(password, 10);
   const user = new User({ username, email, password: hashedPassword });
@@ -15,32 +16,73 @@ async function signup  (req, res, next)  {
   } catch (error) {
     next(error);
   }
-};
- async function signin  (req, res, next)  {
+}
+async function signin(req, res, next) {
   const { email, password } = req.body;
-   
+
   try {
-    let validUser =await User.findOne({ email });
+    let validUser = await User.findOne({ email });
 
     if (!validUser) {
-      return next( errorHandler(200, "User not found"));
+      return next(errorHandler(200, "User not found"));
     }
-    console.log(validUser)
-     let validPassword=bcryptjs.compareSync(password,validUser?.password);
+    let validPassword = bcryptjs.compareSync(password, validUser?.password);
 
-    if(!validPassword)
-    {
-      return next( errorHandler(200, "Password not correct"));
+    if (!validPassword) {
+      return next(errorHandler(200, "Password not correct"));
     }
-    console.log("dddddddd");
-    const token=jwt.sign({id:validUser._id},"sdf5s41w1vf41vb7b551s5e1f8ed2v1d5v1")
-    const {password:pass,...rest}=validUser._doc;
+    const token = jwt.sign(
+      { id: validUser._id },
+      "sdf5s41w1vf41vb7b551s5e1f8ed2v1d5v1"
+    );
+    const { password: pass, ...rest } = validUser._doc;
 
-    res.cookie("authentication_token",token,{httpOnly:true})?.status(200)?.json({success:true,...rest});
+    res
+      .cookie("authentication_token", token, { httpOnly: true })
+      ?.status(200)
+      ?.json({ success: true, ...rest });
   } catch (error) {
     next(error);
   }
-};
+}
 
+async function google(req, res, next) {
+  const { email, password } = req.body;
 
-module.exports={signin,signup};
+  try {
+    let validUser = await User.findOne({ email });
+    if (validUser) {
+      const token = jwt.sign({ id: validUser._id }, process.env.JWT_KEY);
+      const { password: pass, ...rest } = validUser._doc;
+
+      res
+        .cookie("authentication_token", token, { httpOnly: true })
+        ?.status(200)
+        ?.json({ success: true, ...rest });
+    } else {
+      let generatedPassword = Math.random().toString().slice(-8);
+      let hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
+      const newUser = new User({
+        username:
+          req.body.name.split(" ").join("") +
+          Math.random().toString().slice(-8),
+        email: req.body.email,
+        password: hashedPassword,
+        avatar: req.body.photo,
+      });
+      await newUser.save();
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_KEY);
+      const { password: pass, ...rest } = newUser._doc;
+
+      res
+        .cookie("authentication_token", token, { httpOnly: true })
+        ?.status(200)
+        ?.json({ success: true, ...rest });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+console.log(process.env.JWT_KEY)
+
+module.exports = { signin, signup,google };

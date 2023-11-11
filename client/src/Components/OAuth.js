@@ -11,11 +11,12 @@ function OAuth() {
 
       const result = await signInWithPopup(auth, provider);
 
-      console.log(result)
       let payload = {
-        name: result.user.displayName, email:result.user.email,photo:result.user.photoURL
-      }
-      PostData("api/v1/google",payload)
+        name: result.user.displayName,
+        email: result.user.email,
+        photo: result.user.photoURL,
+      };
+      PostData("api/v1/google", payload);
     } catch {}
   };
   return (
