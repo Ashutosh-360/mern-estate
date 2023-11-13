@@ -3,7 +3,6 @@ const bcryptjs = require("bcryptjs");
 const errorHandler = require("../utility/errorHandler.js");
 const jwt = require("jsonwebtoken");
 
-
 async function signup(req, res, next) {
   const { username, email, password } = req.body;
   const hashedPassword = bcryptjs.hashSync(password, 10);
@@ -22,7 +21,6 @@ async function signin(req, res, next) {
 
   try {
     let validUser = await User.findOne({ email });
-
     if (!validUser) {
       return next(errorHandler(200, "User not found"));
     }
@@ -45,14 +43,16 @@ async function signin(req, res, next) {
     next(error);
   }
 }
-
 async function google(req, res, next) {
   const { email, password } = req.body;
 
   try {
     let validUser = await User.findOne({ email });
     if (validUser) {
-      const token = jwt.sign({ id: validUser._id }, process.env.JWT_KEY);
+      const token = jwt.sign(
+        { id: validUser._id },
+        "sdf5s41w1vf41vb7b551s5e1f8ed2v1d5v1"
+      );
       const { password: pass, ...rest } = validUser._doc;
 
       res
@@ -71,7 +71,10 @@ async function google(req, res, next) {
         avatar: req.body.photo,
       });
       await newUser.save();
-      const token = jwt.sign({ id: newUser._id }, process.env.JWT_KEY);
+      const token = jwt.sign(
+        { id: newUser._id },
+        "sdf5s41w1vf41vb7b551s5e1f8ed2v1d5v1"
+      );
       const { password: pass, ...rest } = newUser._doc;
 
       res
@@ -83,6 +86,5 @@ async function google(req, res, next) {
     next(error);
   }
 }
-console.log(process.env.JWT_KEY)
 
-module.exports = { signin, signup,google };
+module.exports = { signin, signup, google };

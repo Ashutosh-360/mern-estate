@@ -16,8 +16,12 @@ function OAuth() {
         email: result.user.email,
         photo: result.user.photoURL,
       };
-      PostData("api/v1/google", payload);
+      PostData("api/v1/google", payload, updateGoogleHandler);
     } catch {}
+  };
+
+  const updateGoogleHandler = (res) => {
+    console.log(res);
   };
   return (
     <button

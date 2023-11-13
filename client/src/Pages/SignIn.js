@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { signInStart } from "../redux/Slice/userSlice";
+import { signInStart, signInSuccess } from "../redux/Slice/userSlice";
 import { PostData } from "../UtilityFunction/API";
 import OAuth from "../Components/OAuth";
 
@@ -23,6 +23,7 @@ function SignIn() {
   const updateSignUpHandler = (response) => {
     if (response?.data?.success) {
       setIsLoading(false);
+      dispatch(signInSuccess(response.data));
       navigate("/");
     } else {
       setError(response?.data?.message);
