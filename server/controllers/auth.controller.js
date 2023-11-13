@@ -43,6 +43,7 @@ async function signin(req, res, next) {
     next(error);
   }
 }
+
 async function google(req, res, next) {
   const { email, password } = req.body;
 
